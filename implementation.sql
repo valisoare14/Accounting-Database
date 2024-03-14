@@ -1,15 +1,3 @@
-/*
-TEMA ECONOMICA
-  Tema economica aleasa pentru baza de date este CONTABILITATEA . Aplicatia se ocupa de gestiunea contributiilor la stat ale angajatilor , a contabililor fiecarui angajat si sediul juridic al contabililor respectivi.
-Tabelele implicate in proiect sunt urmatoarele : tabela ANGAJAT , tabela CONTABILI , tabela SEDIU si tabela CONTRIBUTII
-Tabela CONTABILI se ocupa de gestionarea contabililor fiecarui angajat , dar si de structural or ierarhica prin intermediul coloanei id_sef_contabil
-Tabela SEDIU contine sediile tututor contabililor din tabela CONTABILI , dar si alte sedii neocupate
-Tabela CONTRIBUTII se ocupa de structurarea tuturor darilor angajatilor la stat , incluzand : Contributia de asigurari sociale(CAS) , Contributia de asigurari de sanatate(CASS) , si impozitul pe venit datorat(impozit) . Tabela mai contine si data la care contributiile aferente fiecarui angajat au fost platite , de persoana in cauza .
-
-*/
-
-
-
 
 DROP TABLE ANGAJAT CASCADE CONSTRAINTS;
 DROP TABLE CONTABILI CASCADE CONSTRAINTS;
@@ -115,7 +103,7 @@ select*from CONTRIBUTII where id_angajat=1;
 delete from CONTRIBUTII where id_angajat=2;
 select*from CONTRIBUTII;
 
---5.Exemple de interog?ri cât mai variate ?i relevante pentru tema aleas? (min 20) care s? combineurm?toarele elemente (toate):
+--5.Exemple de interog?ri cÃ¢t mai variate ?i relevante pentru tema aleas? (min 20) care s? combineurm?toarele elemente (toate):
 -->, <, >=, <=, !=, IS NULL, LIKE, IN, BETWEEN; 
 
 --Sa afiseze angajatii cu salariile mai mari de 2700
@@ -163,7 +151,7 @@ group by id_contabil
 having count(id_angajat) >= 2
 order by numar_angajati ;
 
--->Utilizarea func?iilor la nivel de rând (obligatoriu: TO_CHAR?, TO_DATE?, EXTRACT?,SUBSTR?, SYSDATE?, DECODE?, CASE?, NVL?);
+-->Utilizarea func?iilor la nivel de rÃ¢nd (obligatoriu: TO_CHAR?, TO_DATE?, EXTRACT?,SUBSTR?, SYSDATE?, DECODE?, CASE?, NVL?);
 
 --Sa se afiseze id-ul abgajatilor care si-au platit contributiile dupa data de 01 Ianuarie 2022
 select id_angajat from CONTRIBUTII where dataa>to_date('01.01.2022' , 'dd.mm.yy');
