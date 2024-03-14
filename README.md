@@ -1,6 +1,6 @@
   # Tehnologii utilizate:
 - **RDBMS:** Oracle Database
-- **Limbaj de interogare:** SQL
+- **Limbaj de interogare:** Oracle SQL
 
 # Tema Economică:
 Tema economică aleasă pentru baza de date este CONTABILITATEA. Aplicația se ocupă de gestionarea contribuțiilor la stat ale angajaților, a contabililor fiecărui angajat și sediul juridic al contabililor respectivi.
