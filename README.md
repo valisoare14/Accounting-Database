@@ -1,13 +1,12 @@
-  # Tehnologii utilizate:
+# Technologies Used:
 - **RDBMS:** Oracle Database
-- **Limbaj de interogare:** Oracle SQL
+- **Query Language:** Oracle SQL
 
-# Tema Economică:
-Tema economică aleasă pentru baza de date este CONTABILITATEA. Aplicația se ocupă de gestionarea contribuțiilor la stat ale angajaților, a contabililor fiecărui angajat și sediul juridic al contabililor respectivi.
+# Economic Theme:
+The chosen economic theme for the database is **ACCOUNTING**. The application manages employees' state contributions, the accountants assigned to each employee, and the registered offices of these accountants.
 
-Tabelele implicate în proiect sunt următoarele:
-- **Tabela ANGAJAT** - Detalii despre angajați.
-- **Tabela CONTABILI** - Se ocupă de gestionarea contabililor fiecărui angajat, dar și de structura ierarhică prin intermediul coloanei `id_sef_contabil`.
-- **Tabela SEDIU** - Conține sediile tuturor contabililor din tabela CONTABILI, dar și alte sedii neocupate.
-- **Tabela CONTRIBUTII** - Se ocupă de structurarea tuturor dărilor angajaților la stat, incluzând: Contribuția de asigurări sociale (CAS), Contribuția de asigurări de sănătate (CASS), și impozitul pe venit datorat (impozit). De asemenea, tabela conține și data la care contribuțiile aferente fiecărui angajat au fost plătite, de persoana în cauză.
-
+The tables involved in the project are as follows:
+- **ANGAJAT Table** - Contains details about employees.
+- **CONTABILI Table** - Manages the accountants assigned to each employee and the hierarchical structure through the `id_sef_contabil` column.
+- **SEDIU Table** - Contains the registered offices of all accountants in the ACCOUNTANTS table, as well as other unoccupied offices.
+- **CONTRIBUTII Table** - Structures all employee contributions to the state, including: Social Security Contribution (CAS), Health Insurance Contribution (CASS), and the income tax due (tax). Additionally, the table includes the date on which each employee's contributions were paid by the respective individual.
