@@ -1,237 +1,524 @@
-DROP TABLE ANGAJAT CASCADE CONSTRAINTS;
-DROP TABLE CONTABILI CASCADE CONSTRAINTS;
-DROP TABLE SEDIU CASCADE CONSTRAINTS;
-DROP TABLE CONTRIBUTII CASCADE CONSTRAINTS;
+-- 1. Drop tables if they exist (to ensure a clean setup)
+DROP TABLE EMPLOYEES CASCADE CONSTRAINTS;
+DROP TABLE ACCOUNTANTS CASCADE CONSTRAINTS;
+DROP TABLE HEADQUARTERS CASCADE CONSTRAINTS;
+DROP TABLE CONTRIBUTIONS CASCADE CONSTRAINTS;
 
+-------------------------------------------------------------------------------
+-- 2. Create the EMPLOYEES table with the following fields:
+--    employee_id, accountant_id, last_name, first_name, age, salary
 
+CREATE TABLE EMPLOYEES (
+    employee_id   NUMBER(7),
+    accountant_id NUMBER(7),
+    last_name     VARCHAR2(25),
+    first_name    VARCHAR2(25),
+    age           NUMBER(7),
+    salary        NUMBER(7)
+);
 
---Sa se creeze tabela ANGAJAT , care sa contina urmatoarele campuri : id_angajat , id_contabil , nume , prenume , varsta , salariul
-create table ANGAJAT(id_angajat number(7) , id_contabil number(7) , nume varchar2(25) ,prenume varchar2(25) , varsta number(7) , salariul number(7));
---Sa se adauge urmatoarele restrictii in tabela ANGAJAT : id_angajat-primary key ; id_angajat-restrictia de integritate ; id_contabil-foreign key
-alter table ANGAJAT add constraint id_angajat_PK primary key(id_angajat); 
-alter table ANGAJAT add constraint id_angajat_nn check(id_angajat is not null);
-alter table ANGAJAT add constraint id_contabil_FK foreign key(id_contabil) references CONTABILI(id_contabil);
+-- Add constraints to EMPLOYEES:
+--  employee_id => primary key
+--  employee_id => not null
+--  accountant_id => foreign key (references ACCOUNTANTS)
 
---Sa se creeze tabela CONTABILI , care sa contina urmatoarele campuri :   id_contabil ,id_sef_contabil ,  nume , prenume , id_sediu
-create table CONTABILI(id_contabil number(7) ,id_sef_contabil number(7) , nume varchar2(25), prenume varchar2(25) ,id_sediu number(7));
---Sa se adauge urmatoarele restrictii in tabela CONTABILI : id_contabil-primary key ; id_contabil-restrictia de integritate ; id_sediu-foreign key
-alter table CONTABILI add constraint id_contabil_PK primary key(id_contabil);
-alter table CONTABILI add constraint id_contabil_NN check(id_contabil is not null);
-alter table CONTABILI add constraint id_sediu_FK foreign key(id_sediu) references SEDIU(id_sediu);
+ALTER TABLE EMPLOYEES
+  ADD CONSTRAINT employee_id_pk PRIMARY KEY (employee_id);
 
---Sa se creeze tabela SEDIU , care sa contina urmatoarele campuri : id_sediu , denumire_sediu , locatie
-create table SEDIU(id_sediu number(7) , denumire_sediu varchar2(25) , locatie varchar2(25));
---Sa se adauge urmatoarele restrictii in tabela SEDIU : id_sediu-primary key ; id_sediu-restrictia de integritate
-alter table SEDIU add constraint id_sediu_PK primary key(id_sediu);
-alter table SEDIU add constraint id_sediu_NN check(id_sediu is not null);
+ALTER TABLE EMPLOYEES
+  ADD CONSTRAINT employee_id_nn CHECK (employee_id IS NOT NULL);
 
---Sa se creeze tabela CONTRIBUTII , care sa contina urmatoarele campuri : id_angajat , cas , cass , impozit , dataa
-create table CONTRIBUTII(id_angajat number(7) , cas number(7) , cass number(7) , impozit number(7) , dataa date);
---Sa se adauge urmatoarele restrictii in tabela CONTRIBUTII : id_angajat-foreign key
-alter table CONTRIBUTII add constraint id_angajat_FK foreign key(id_angajat) references ANGAJAT(id_angajat);
+ALTER TABLE EMPLOYEES
+  ADD CONSTRAINT accountant_id_fk FOREIGN KEY (accountant_id)
+  REFERENCES ACCOUNTANTS (accountant_id);
 
+-------------------------------------------------------------------------------
+-- 3. Create the ACCOUNTANTS table with the following fields:
+--    accountant_id, chief_accountant_id, last_name, first_name, headquarters_id
 
---Exemple cu opera?ii de actualizare a datelor: INSERT, UPDATE, DELETE:
+CREATE TABLE ACCOUNTANTS (
+    accountant_id       NUMBER(7),
+    chief_accountant_id NUMBER(7),
+    last_name           VARCHAR2(25),
+    first_name          VARCHAR2(25),
+    headquarters_id     NUMBER(7)
+);
 
+-- Add constraints to ACCOUNTANTS:
+--  accountant_id => primary key
+--  accountant_id => not null
+--  headquarters_id => foreign key (references HEADQUARTERS)
 
---Sa se adauge 5 angjati in tabela ANGAJAT , dintre care cel cu id-ul =1 sa fie numele elevului care realizeaza proiectul
-insert into ANGAJAT (id_angajat , id_contabil , nume , prenume , varsta , salariul) values(1 , 1 , 'SOARE' , 'VALENTIN' , 20 , 1800); 
-insert into ANGAJAT(id_angajat , id_contabil , nume , prenume , varsta , salariul) values(2 , 1 , 'POPESCU' , 'LEONARD' , 20 , 1800); 
-insert into ANGAJAT (id_angajat , id_contabil , nume , prenume , varsta , salariul) values(3 , 2 , 'MANTEA' , 'ION' , 39 , 2700);
-insert into ANGAJAT (id_angajat , id_contabil , nume , prenume , varsta , salariul) values(4 , 3 , 'RADUCU' , 'IVAN' , 45 , 2800);
-insert into ANGAJAT (id_angajat , id_contabil , nume , prenume , varsta , salariul) values(5 , 5 , 'PINTEA' , 'COSTEL' , 24 , 3200);
-insert into ANGAJAT (id_angajat , id_contabil , nume , prenume , varsta , salariul) values(6 , 4 , 'MARIA' , 'DOLORES' , 66 , 4800);
-insert into ANGAJAT (id_angajat , id_contabil , nume , prenume , varsta , salariul) values(7 , 3 , 'FLORIN' , 'ANTONESCU' , 31 , 2500);
-select*from ANGAJAT;
+ALTER TABLE ACCOUNTANTS
+  ADD CONSTRAINT accountant_id_pk PRIMARY KEY (accountant_id);
 
---Sa se seteze salariul angajatului cu id_angajat=1 cu 2000 lei
-update ANGAJAT set salariul=2000 where id_angajat=1;
-select*from ANGAJAT where id_angajat=1;
+ALTER TABLE ACCOUNTANTS
+  ADD CONSTRAINT accountant_id_nn CHECK (accountant_id IS NOT NULL);
 
---Sa se elimine angajatul cu id_angajat=2
-delete from ANGAJAT where id_angajat=2;
-select*from ANGAJAT;
+ALTER TABLE ACCOUNTANTS
+  ADD CONSTRAINT headquarters_id_fk FOREIGN KEY (headquarters_id)
+  REFERENCES HEADQUARTERS (headquarters_id);
 
---Sa se adauge 5 contabili in tabela CONTABILI
-insert into CONTABILI(id_contabil , nume , prenume, id_sediu , id_sef_contabil) values(1 , 'OPREA', 'MITICA' , 1 , 0);
-insert into CONTABILI(id_contabil , nume , prenume , id_sediu , id_sef_contabil) values(2 , 'EUGEN' ,'HERGHELEGIU' , 2 , 3);
-insert into CONTABILI(id_contabil , nume , prenume , id_sediu , id_sef_contabil) values(3 , 'VASILE' ,'TUBUS' , 3 , 1);
-insert into CONTABILI(id_contabil , nume , prenume , id_sediu , id_sef_contabil) values(4 , 'COSMIN' ,'RICU' , 4 , 2);
-insert into CONTABILI(id_contabil , nume , prenume ,id_sediu , id_sef_contabil) values(5 , 'SANDU' , 'BALU' , 4 , 4);
-select*from CONTABILI;
+-------------------------------------------------------------------------------
+-- 4. Create the HEADQUARTERS table with the following fields:
+--    headquarters_id, headquarters_name, location
 
---Sa se schimbe numele contabilului cu id_contabil=1 in 'Andrei'
-update CONTABILI set nume='ANDREI' where id_contabil=1;
-select*from CONTABILI where id_contabil=1;
+CREATE TABLE HEADQUARTERS (
+    headquarters_id   NUMBER(7),
+    headquarters_name VARCHAR2(25),
+    location          VARCHAR2(25)
+);
 
---Sa se elimine contabilul cu id_contabil=4
-delete from CONTABILI where id_contabil=4;
-select*from CONTABILI ;
+-- Add constraints to HEADQUARTERS:
+--  headquarters_id => primary key
+--  headquarters_id => not null
 
---Sa se insereze 5 sedii in tabela SEDIU
-insert into SEDIU (id_sediu , denumire_sediu , locatie) values (1 , 'vanti' , 'Chitila');
-insert into SEDIU (id_sediu , denumire_sediu , locatie) values (2 , 'cunus' , 'Pantelimon');
-insert into SEDIU (id_sediu , denumire_sediu , locatie) values (3 , 'valal' , 'Vaceni');
-insert into SEDIU (id_sediu , denumire_sediu , locatie) values (4 , 'print' , 'Oradea');
-insert into SEDIU (id_sediu , denumire_sediu , locatie) values (5 , 'balos' , 'Voluntari');
-insert into SEDIU (id_sediu , denumire_sediu , locatie) values (6 , 'event' , 'Giurgiu');
-select*from SEDIU;
+ALTER TABLE HEADQUARTERS
+  ADD CONSTRAINT headquarters_id_pk PRIMARY KEY (headquarters_id);
 
---Sa se schimbe denumirea sediului cu id_sediu=1 in 'cuval'
-update SEDIU set denumire_sediu='cuval' where id_sediu=1;
-select*from SEDIU where id_sediu=1;
+ALTER TABLE HEADQUARTERS
+  ADD CONSTRAINT headquarters_id_nn CHECK (headquarters_id IS NOT NULL);
 
---Sa se elimine sediul cu denumire_sediu='valal'
-delete from SEDIU where denumire_sediu='valal';
-select*from SEDIU ;
+-------------------------------------------------------------------------------
+-- 5. Create the CONTRIBUTIONS table with the following fields:
+--    employee_id, social_security (cas), health_insurance (cass), tax (impozit), contribution_date
 
---Sa se introduca contributiile angajatilor din tabela ANGAJAT in tabela CONTRIBUTII
-insert into CONTRIBUTII (id_angajat , cas , cass , impozit , dataa) values (1 , 500 , 200 , 200 , to_date('17-09-2021', 'dd-mm-yyyy'));
-insert into CONTRIBUTII (id_angajat , cas , cass , impozit , dataa) values (2 , 450 , 180 , 280 , to_date('23-11-2021', 'dd-mm-yyyy'));
-insert into CONTRIBUTII (id_angajat , cas , cass , impozit , dataa) values (3 , 675 , 270 , 270 , to_date('02-01-2022', 'dd-mm-yyyy'));
-insert into CONTRIBUTII (id_angajat , cas , cass , impozit , dataa) values (4 , 700 , 280 , 280 , to_date('14-02-2022', 'dd-mm-yyyy'));
-insert into CONTRIBUTII (id_angajat , cas , cass , impozit , dataa) values (5 , 800 , 320 , 320 , to_date('28-06-2022', 'dd-mm-yyyy'));
-insert into CONTRIBUTII (id_angajat , cas , cass , impozit , dataa) values (6 , 1200 , 480 , null , to_date('10-08-2022', 'dd-mm-yyyy'));
-select*from CONTRIBUTII;
+CREATE TABLE CONTRIBUTIONS (
+    employee_id       NUMBER(7),
+    social_security   NUMBER(7),  -- CAS
+    health_insurance  NUMBER(7),  -- CASS
+    tax               NUMBER(7),  -- IMPOZIT
+    contribution_date DATE
+);
 
---Sa se modifice cas al angajatului cu id_angajat=1 cu 510
-update CONTRIBUTII set cas=510 where id_angajat=1;
-select*from CONTRIBUTII where id_angajat=1;
+-- Add constraints to CONTRIBUTIONS:
+--  employee_id => foreign key (references EMPLOYEES)
 
---Sa se stearga contributia angajatului cu id_angajat=2
-delete from CONTRIBUTII where id_angajat=2;
-select*from CONTRIBUTII;
+ALTER TABLE CONTRIBUTIONS
+  ADD CONSTRAINT employee_id_fk FOREIGN KEY (employee_id)
+  REFERENCES EMPLOYEES (employee_id);
 
---5.Exemple de interog?ri cât mai variate ?i relevante pentru tema aleas? (min 20) care s? combineurm?toarele elemente (toate):
--->, <, >=, <=, !=, IS NULL, LIKE, IN, BETWEEN; 
+-------------------------------------------------------------------------------
+-- Data Manipulation Examples (INSERT, UPDATE, DELETE)
 
---Sa afiseze angajatii cu salariile mai mari de 2700
-select nume , prenume , salariul from ANGAJAT where salariul>2700;
+-- Insert 5 (actually 7 below) employees into EMPLOYEES 
+-- The one with employee_id=1 should be the name of the student who is doing the project (example)
+INSERT INTO EMPLOYEES (employee_id, accountant_id, last_name, first_name, age, salary)
+  VALUES (1, 1, 'SOARE', 'VALENTIN', 20, 1800);
 
---Sa se afiseze angajatii cu salariile mai mici de 2700
-select nume , prenume , salariul from ANGAJAT where salariul<2700;
+INSERT INTO EMPLOYEES (employee_id, accountant_id, last_name, first_name, age, salary)
+  VALUES (2, 1, 'POPESCU', 'LEONARD', 20, 1800);
 
---Sa se afiseze id-ul angajatilor ce au platit impozite la stat mai mari de 280 lei
-select id_angajat , impozit from CONTRIBUTII where impozit >=280;
+INSERT INTO EMPLOYEES (employee_id, accountant_id, last_name, first_name, age, salary)
+  VALUES (3, 2, 'MANTEA', 'ION', 39, 2700);
 
---Sa se afiseze id-ul angajatilor ce au platit impozite la stat mai mici de 320 lei
-select id_angajat , impozit from CONTRIBUTII where impozit<=320;
+INSERT INTO EMPLOYEES (employee_id, accountant_id, last_name, first_name, age, salary)
+  VALUES (4, 3, 'RADUCU', 'IVAN', 45, 2800);
 
---Sa se afiseze toate sediile cu id-ul diferit de 1
-select*from SEDIU where id_sediu != 1;
+INSERT INTO EMPLOYEES (employee_id, accountant_id, last_name, first_name, age, salary)
+  VALUES (5, 5, 'PINTEA', 'COSTEL', 24, 3200);
 
---Sa se afiseze id-ul angajatului care nu plateste impozit la stat
-select id_angajat from CONTRIBUTII where impozit is null;
+INSERT INTO EMPLOYEES (employee_id, accountant_id, last_name, first_name, age, salary)
+  VALUES (6, 4, 'MARIA', 'DOLORES', 66, 4800);
 
---Sa se afiseze denumirea sediilor localizate in orase care incep cu litera V
-select denumire_sediu from SEDIU where locatie like 'V%';
+INSERT INTO EMPLOYEES (employee_id, accountant_id, last_name, first_name, age, salary)
+  VALUES (7, 3, 'FLORIN', 'ANTONESCU', 31, 2500);
 
---Sa se afiseze id-ul de sediu al contabiluluicu prenumele MITICA
-select id_sediu from CONTABILI where prenume in 'MITICA';
+SELECT * FROM EMPLOYEES;
 
---Sa se afiseze angajatii cu varsta cuprinsa intre 20 si 50 de ani 
-select nume , prenume , varsta from ANGAJAT where varsta between 20 and 50;
+-- Update the salary of the employee with employee_id=1 to 2000
+UPDATE EMPLOYEES
+   SET salary = 2000
+ WHERE employee_id = 1;
 
+SELECT * FROM EMPLOYEES WHERE employee_id = 1;
 
--->Jonc?iuni (inner, outer);
+-- Remove the employee with employee_id=2
+DELETE FROM EMPLOYEES
+      WHERE employee_id = 2;
 
---Sa se afiseze numele , prenumele si impozitul platit de toti angajatii care sunt inregistrati in tabela de CONTIBUTII - inner join
-select a.nume , a.prenume , c.impozit from ANGAJAT a , CONTRIBUTII c where a.id_angajat=c.id_angajat;
+SELECT * FROM EMPLOYEES;
 
---Sa se afiseze id-ul sediului si numele si prenumele contabilului care lucreaza la sediul respectiv - outer join
-select s.id_sediu , c.nume , c.prenume from SEDIU s , CONTABILI c where s.id_sediu=c.id_sediu(+);
+-------------------------------------------------------------------------------
+-- Insert 5 accountants into ACCOUNTANTS
 
+INSERT INTO ACCOUNTANTS (accountant_id, last_name, first_name, headquarters_id, chief_accountant_id)
+  VALUES (1, 'OPREA', 'MITICA', 1, 0);
 
--->Utilizarea func?iilor de grup, clauzelor GROUP BY, HAVING;
+INSERT INTO ACCOUNTANTS (accountant_id, last_name, first_name, headquarters_id, chief_accountant_id)
+  VALUES (2, 'EUGEN', 'HERGHELEGIU', 2, 3);
 
---Sa se afiseze id_ul contabililor si numarul de angajati cu care lucreaza , doar pt contabilii care lucreaza cu cel putin 2 angajati
-select id_contabil ,  count(id_angajat) numar_angajati from ANGAJAT 
-group by id_contabil
-having count(id_angajat) >= 2
-order by numar_angajati ;
+INSERT INTO ACCOUNTANTS (accountant_id, last_name, first_name, headquarters_id, chief_accountant_id)
+  VALUES (3, 'VASILE', 'TUBUS', 3, 1);
 
--->Utilizarea func?iilor la nivel de rând (obligatoriu: TO_CHAR?, TO_DATE?, EXTRACT?,SUBSTR?, SYSDATE?, DECODE?, CASE?, NVL?);
+INSERT INTO ACCOUNTANTS (accountant_id, last_name, first_name, headquarters_id, chief_accountant_id)
+  VALUES (4, 'COSMIN', 'RICU', 4, 2);
 
---Sa se afiseze id-ul abgajatilor care si-au platit contributiile dupa data de 01 Ianuarie 2022
-select id_angajat from CONTRIBUTII where dataa>to_date('01.01.2022' , 'dd.mm.yy');
+INSERT INTO ACCOUNTANTS (accountant_id, last_name, first_name, headquarters_id, chief_accountant_id)
+  VALUES (5, 'SANDU', 'BALU', 4, 4);
 
---Sa se afiseze numele si prenumele angajatului care si-a platit contributiile in luna August
-select a.nume , a.prenume , c.dataa from ANGAJAT a , CONTRIBUTII c where a.id_angajat=c.id_angajat and extract(month from dataa)=08;
+SELECT * FROM ACCOUNTANTS;
 
---Sa se afiseze angajatii si data la care si-au platit contributiile in format MM.YY
-select a.nume , a.prenume , to_char(dataa , 'mm.yy') data_plata from ANGAJAT a , CONTRIBUTII c where a.id_angajat=c.id_angajat;
+-- Change the last_name of the accountant with accountant_id=1 to 'ANDREI'
+UPDATE ACCOUNTANTS
+   SET last_name = 'ANDREI'
+ WHERE accountant_id = 1;
 
---Sa se afiseze numele si prenumele angajatilor care lucreaza cu contabilul cu id_contabil=1
-select nume , prenume , id_contabil from ANGAJAT where substr(id_contabil , 1 , 1)='1';
+SELECT * FROM ACCOUNTANTS WHERE accountant_id = 1;
 
---Sa se afiseze cate saptamani au trecut de la plata ultimelor contributii ale fiecarui angajat
-select id_angajat , (sysdate-dataa)/7 saptamani from CONTRIBUTII;
+-- Remove the accountant with accountant_id=4
+DELETE FROM ACCOUNTANTS
+      WHERE accountant_id = 4;
 
---Sa se aplice urmatoarele comisioane pt angajati:
---Daca apartine de contabil 1 -10%
---Daca apartine de contabil 2 - 8%
---Daca apartine de contabil 3 - 4%
---Daca apartine de contabil 4 -  1%
---Daca apartine de contabil 5 -  2%
---Si sa se afiseze acestea
-select nume , prenume , decode(id_contabil , '1' , 0.1 , '2' , 0.08 , '3' , 0.04 , '4' , 0.01 , '5' , 0.02 , 0)*salariul comision from ANGAJAT;
+SELECT * FROM ACCOUNTANTS;
 
---Sa se incadreze sediile in felul urmator(Pe judete):
---'Chitilia' => Ilfov
---'Pantelimon' => Ilfov
---'Vaceni' => Teleorman
---'Oradea' => Oradea
---'Voluntari' => Ilfov
---'Giurgiu' =>Giurgiu
-select denumire_sediu , case when upper(locatie)='CHITILA' then 'Ilfov' when upper(locatie)='PANTELIMON' then 'Ilfov' when upper(locatie)='VACENI' then 'Teleorman' when upper(locatie)='ORADEA' then 'Oradea' when upper(locatie)='VOLUNTARI' then 'Ilfov' when upper(locatie)='GIURGIU' then 'Giurgiu' else 'niciun_judet' end judet from SEDIU;
+-------------------------------------------------------------------------------
+-- Insert 5 headquarters into HEADQUARTERS
 
---Sa se afiseze contributiile totale ale angajatilor
+INSERT INTO HEADQUARTERS (headquarters_id, headquarters_name, location)
+  VALUES (1, 'vanti', 'Chitila');
 
-select a.nume , a.prenume , nvl(c.cas , 0)+nvl(c.cass , 0)+nvl(c.impozit , 0) total_de_plata from ANGAJAT a , CONTRIBUTII c where a.id_angajat=c.id_angajat;
+INSERT INTO HEADQUARTERS (headquarters_id, headquarters_name, location)
+  VALUES (2, 'cunus', 'Pantelimon');
 
+INSERT INTO HEADQUARTERS (headquarters_id, headquarters_name, location)
+  VALUES (3, 'valal', 'Vaceni');
 
--->Utilizarea operatorilor UNION, MINUS, INTERSECT;
+INSERT INTO HEADQUARTERS (headquarters_id, headquarters_name, location)
+  VALUES (4, 'print', 'Oradea');
 
---Sa se afiseze toti angajatii , mai putin cei cu varsta peste 40 de ani
-select nume , prenume , varsta from ANGAJAT
-minus
-select nume , prenume , varsta from ANGAJAT where varsta>40;
+INSERT INTO HEADQUARTERS (headquarters_id, headquarters_name, location)
+  VALUES (5, 'balos', 'Voluntari');
 
---Sa se adauge urmatorele sporuri de vechime la salariile angajatilor si sa se afiseze noile salarii
---20<varsta<30 -> 10%
---30<varsta<40 -> 20%
---40<varsta<50 -> 30%
---50<varsta<60 -> 40%
---60<varsta<70 -> 50%
-select nume , prenume , varsta , salariul*1.1 noul_salariu from ANGAJAT where varsta>19 and varsta <=30
-union
-select nume , prenume , varsta , salariul*1.2 noul_salariu from ANGAJAT where varsta>30 and varsta <=40
-union
-select nume , prenume , varsta , salariul*1.3 noul_salariu from ANGAJAT where varsta>40 and varsta <=50
-union
-select nume , prenume , varsta , salariul*1.4 noul_salariu from ANGAJAT where varsta>50 and varsta <=60
-union
-select nume , prenume , varsta , salariul*1.5 noul_salariu from ANGAJAT where varsta>60 and varsta <=70;
+INSERT INTO HEADQUARTERS (headquarters_id, headquarters_name, location)
+  VALUES (6, 'event', 'Giurgiu');
 
---Sa se afiseze numele ,prenumele , totalul contributiilor , data de plata si id-ul angajatilor care au platit contributii totale mai mici de 1350 lei , insa platite in anul 2022
-select a.id_angajat , a.nume , a.prenume ,  nvl(c.cas , 0)+nvl(c.cass , 0)+nvl(c.impozit , 0) total_contributii , c.dataa from ANGAJAT a , CONTRIBUTII c
-where a.id_angajat=c.id_angajat and nvl(c.cas , 0)+nvl(c.cass , 0)+nvl(c.impozit , 0)<1350
-intersect
-select a.id_angajat , a.nume , a.prenume ,  nvl(c.cas , 0)+nvl(c.cass , 0)+nvl(c.impozit , 0) total_contributii , c.dataa from ANGAJAT a , CONTRIBUTII c
-where a.id_angajat=c.id_angajat and extract(year from dataa)=2022;
+SELECT * FROM HEADQUARTERS;
 
---Subcereri simple si corelate;
+-- Change the headquarters_name of the headquarters with headquarters_id=1 to 'cuval'
+UPDATE HEADQUARTERS
+   SET headquarters_name = 'cuval'
+ WHERE headquarters_id = 1;
 
---Sa se afiseze angajatii care au salariul mai mic decat salariul mediu din cadrul tabelei
-select nume , prenume , salariul from ANGAJAT where salariul<(select avg(salariul) from ANGAJAT); 
+SELECT * FROM HEADQUARTERS WHERE headquarters_id = 1;
 
---Sa se afiseze toti angajatii care nu si-au platit contributiile
-select nume , prenume from ANGAJAT where id_angajat not in(select id_angajat from CONTRIBUTII);
+-- Remove the headquarters with headquarters_name='valal'
+DELETE FROM HEADQUARTERS
+      WHERE headquarters_name = 'valal';
 
---Sa se afiseze numele si prenumele angajatilor , precum si numele de familie al contabilului fiecarui angajat , folosind  o subcerere corelata
-select nume , prenume , (select nume from CONTABILI where ANGAJAT.id_contabil=CONTABILI.id_contabil) contabil from ANGAJAT;
+SELECT * FROM HEADQUARTERS;
 
---Sa se afiseze structura ierarhica a contabililor in functie de atributul id_sef_contabil
-select level , nume , prenume , id_contabil , id_sef_contabil from CONTABILI connect by  prior id_contabil=  id_sef_contabil start with id_contabil=1;
+-------------------------------------------------------------------------------
+-- Insert employees' contributions into CONTRIBUTIONS
 
+INSERT INTO CONTRIBUTIONS (employee_id, social_security, health_insurance, tax, contribution_date)
+  VALUES (1, 500, 200, 200, TO_DATE('17-09-2021', 'DD-MM-YYYY'));
 
+INSERT INTO CONTRIBUTIONS (employee_id, social_security, health_insurance, tax, contribution_date)
+  VALUES (2, 450, 180, 280, TO_DATE('23-11-2021', 'DD-MM-YYYY'));
+
+INSERT INTO CONTRIBUTIONS (employee_id, social_security, health_insurance, tax, contribution_date)
+  VALUES (3, 675, 270, 270, TO_DATE('02-01-2022', 'DD-MM-YYYY'));
+
+INSERT INTO CONTRIBUTIONS (employee_id, social_security, health_insurance, tax, contribution_date)
+  VALUES (4, 700, 280, 280, TO_DATE('14-02-2022', 'DD-MM-YYYY'));
+
+INSERT INTO CONTRIBUTIONS (employee_id, social_security, health_insurance, tax, contribution_date)
+  VALUES (5, 800, 320, 320, TO_DATE('28-06-2022', 'DD-MM-YYYY'));
+
+INSERT INTO CONTRIBUTIONS (employee_id, social_security, health_insurance, tax, contribution_date)
+  VALUES (6, 1200, 480, NULL, TO_DATE('10-08-2022', 'DD-MM-YYYY'));
+
+SELECT * FROM CONTRIBUTIONS;
+
+-- Update social_security for the employee with employee_id=1 to 510
+UPDATE CONTRIBUTIONS
+   SET social_security = 510
+ WHERE employee_id = 1;
+
+SELECT * FROM CONTRIBUTIONS WHERE employee_id = 1;
+
+-- Remove the contribution of the employee with employee_id=2
+DELETE FROM CONTRIBUTIONS
+      WHERE employee_id = 2;
+
+SELECT * FROM CONTRIBUTIONS;
+
+-------------------------------------------------------------------------------
+-- 5. Examples of various queries
+
+-- Comparison operators: >, <, >=, <=, !=, IS NULL, LIKE, IN, BETWEEN
+
+-- 1) Display employees whose salary is greater than 2700
+SELECT last_name, first_name, salary
+  FROM EMPLOYEES
+ WHERE salary > 2700;
+
+-- 2) Display employees whose salary is less than 2700
+SELECT last_name, first_name, salary
+  FROM EMPLOYEES
+ WHERE salary < 2700;
+
+-- 3) Display employee_ids of those who paid a tax >= 280
+SELECT employee_id, tax
+  FROM CONTRIBUTIONS
+ WHERE tax >= 280;
+
+-- 4) Display employee_ids of those who paid a tax <= 320
+SELECT employee_id, tax
+  FROM CONTRIBUTIONS
+ WHERE tax <= 320;
+
+-- 5) Display all headquarters whose id is different from 1
+SELECT *
+  FROM HEADQUARTERS
+ WHERE headquarters_id != 1;
+
+-- 6) Display the employee_id of the employee who does NOT pay tax (tax is null)
+SELECT employee_id
+  FROM CONTRIBUTIONS
+ WHERE tax IS NULL;
+
+-- 7) Display the headquarters_name of those located in cities starting with 'V'
+SELECT headquarters_name
+  FROM HEADQUARTERS
+ WHERE location LIKE 'V%';
+
+-- 8) Display the headquarters_id of the accountant whose first_name is 'MITICA'
+SELECT headquarters_id
+  FROM ACCOUNTANTS
+ WHERE first_name IN ('MITICA');
+
+-- 9) Display employees between 20 and 50 years old
+SELECT last_name, first_name, age
+  FROM EMPLOYEES
+ WHERE age BETWEEN 20 AND 50;
+
+-------------------------------------------------------------------------------
+-- Joins (inner, outer)
+
+-- 1) INNER JOIN example:
+--    Display last_name, first_name, and the tax paid by all employees found in CONTRIBUTIONS
+
+SELECT e.last_name,
+       e.first_name,
+       c.tax
+  FROM EMPLOYEES e
+       JOIN CONTRIBUTIONS c ON e.employee_id = c.employee_id;
+
+-- 2) OUTER JOIN example:
+--    Display headquarters_id, accountant's last_name, first_name even if they have no matching record
+
+SELECT h.headquarters_id,
+       a.last_name,
+       a.first_name
+  FROM HEADQUARTERS h,
+       ACCOUNTANTS a
+ WHERE h.headquarters_id = a.headquarters_id(+);
+
+-------------------------------------------------------------------------------
+-- Group functions, GROUP BY, HAVING
+
+-- 1) Display accountant_id and the number of employees for each accountant,
+--    but only for those who work with at least 2 employees
+
+SELECT accountant_id,
+       COUNT(employee_id) AS number_of_employees
+  FROM EMPLOYEES
+ GROUP BY accountant_id
+HAVING COUNT(employee_id) >= 2
+ORDER BY number_of_employees;
+
+-------------------------------------------------------------------------------
+-- Single-row functions (TO_CHAR, TO_DATE, EXTRACT, SUBSTR, SYSDATE, DECODE, CASE, NVL)
+
+-- 1) Display employee_ids who paid contributions after January 1, 2022
+SELECT employee_id
+  FROM CONTRIBUTIONS
+ WHERE contribution_date > TO_DATE('01.01.2022', 'DD.MM.YY');
+
+-- 2) Display the last_name, first_name of the employee who paid contributions in August
+SELECT e.last_name,
+       e.first_name,
+       c.contribution_date
+  FROM EMPLOYEES e
+       JOIN CONTRIBUTIONS c ON e.employee_id = c.employee_id
+ WHERE EXTRACT(MONTH FROM c.contribution_date) = 8;
+
+-- 3) Display employees and the date (month.year) they paid contributions
+SELECT e.last_name,
+       e.first_name,
+       TO_CHAR(c.contribution_date, 'MM.YY') AS payment_date
+  FROM EMPLOYEES e
+       JOIN CONTRIBUTIONS c ON e.employee_id = c.employee_id;
+
+-- 4) Display last_name, first_name of employees who work with accountant_id=1 
+--    (using SUBSTR as an example; though here it's a bit forced)
+SELECT last_name,
+       first_name,
+       accountant_id
+  FROM EMPLOYEES
+ WHERE SUBSTR(accountant_id, 1, 1) = '1';
+
+-- 5) Display how many weeks have passed since the most recent contribution payment
+SELECT employee_id,
+       (SYSDATE - contribution_date) / 7 AS weeks_since_payment
+  FROM CONTRIBUTIONS;
+
+-- 6) Apply commission rates to employees based on which accountant they belong to:
+--    If accountant_id=1 => 10%
+--    If accountant_id=2 => 8%
+--    If accountant_id=3 => 4%
+--    If accountant_id=4 => 1%
+--    If accountant_id=5 => 2%
+
+SELECT last_name,
+       first_name,
+       DECODE(
+          accountant_id,
+          '1', 0.10,
+          '2', 0.08,
+          '3', 0.04,
+          '4', 0.01,
+          '5', 0.02,
+          0
+       ) * salary AS commission
+  FROM EMPLOYEES;
+
+-- 7) Categorize headquarters by county using CASE:
+--    'Chitila'    => 'Ilfov'
+--    'Pantelimon' => 'Ilfov'
+--    'Vaceni'     => 'Teleorman'
+--    'Oradea'     => 'Oradea'
+--    'Voluntari'  => 'Ilfov'
+--    'Giurgiu'    => 'Giurgiu'
+
+SELECT headquarters_name,
+       CASE
+         WHEN UPPER(location) = 'CHITILA' THEN 'Ilfov'
+         WHEN UPPER(location) = 'PANTELIMON' THEN 'Ilfov'
+         WHEN UPPER(location) = 'VACENI' THEN 'Teleorman'
+         WHEN UPPER(location) = 'ORADEA' THEN 'Oradea'
+         WHEN UPPER(location) = 'VOLUNTARI' THEN 'Ilfov'
+         WHEN UPPER(location) = 'GIURGIU' THEN 'Giurgiu'
+         ELSE 'no_county'
+       END AS county
+  FROM HEADQUARTERS;
+
+-- 8) Display total contributions for each employee (handle NULLs with NVL)
+
+SELECT e.last_name,
+       e.first_name,
+       NVL(c.social_security, 0) + NVL(c.health_insurance, 0) + NVL(c.tax, 0) AS total_payment
+  FROM EMPLOYEES e
+       JOIN CONTRIBUTIONS c ON e.employee_id = c.employee_id;
+
+-------------------------------------------------------------------------------
+-- Set operators (UNION, MINUS, INTERSECT)
+
+-- 1) Display all employees except those older than 40
+SELECT last_name, first_name, age
+  FROM EMPLOYEES
+MINUS
+SELECT last_name, first_name, age
+  FROM EMPLOYEES
+ WHERE age > 40;
+
+-- 2) Add seniority bonuses based on age and display the new salaries:
+--    20 < age <= 30 => 10%
+--    30 < age <= 40 => 20%
+--    40 < age <= 50 => 30%
+--    50 < age <= 60 => 40%
+--    60 < age <= 70 => 50%
+
+SELECT last_name,
+       first_name,
+       age,
+       salary * 1.1 AS new_salary
+  FROM EMPLOYEES
+ WHERE age > 19 AND age <= 30
+UNION
+SELECT last_name,
+       first_name,
+       age,
+       salary * 1.2 AS new_salary
+  FROM EMPLOYEES
+ WHERE age > 30 AND age <= 40
+UNION
+SELECT last_name,
+       first_name,
+       age,
+       salary * 1.3 AS new_salary
+  FROM EMPLOYEES
+ WHERE age > 40 AND age <= 50
+UNION
+SELECT last_name,
+       first_name,
+       age,
+       salary * 1.4 AS new_salary
+  FROM EMPLOYEES
+ WHERE age > 50 AND age <= 60
+UNION
+SELECT last_name,
+       first_name,
+       age,
+       salary * 1.5 AS new_salary
+  FROM EMPLOYEES
+ WHERE age > 60 AND age <= 70;
+
+-- 3) Display last_name, first_name, total contributions, date of payment, and employee_id 
+--    for those who paid less than 1350 total in the year 2022
+
+SELECT e.employee_id,
+       e.last_name,
+       e.first_name,
+       NVL(c.social_security, 0) + NVL(c.health_insurance, 0) + NVL(c.tax, 0) AS total_contributions,
+       c.contribution_date
+  FROM EMPLOYEES e
+       JOIN CONTRIBUTIONS c ON e.employee_id = c.employee_id
+ WHERE (NVL(c.social_security, 0) + NVL(c.health_insurance, 0) + NVL(c.tax, 0)) < 1350
+INTERSECT
+SELECT e.employee_id,
+       e.last_name,
+       e.first_name,
+       NVL(c.social_security, 0) + NVL(c.health_insurance, 0) + NVL(c.tax, 0) AS total_contributions,
+       c.contribution_date
+  FROM EMPLOYEES e
+       JOIN CONTRIBUTIONS c ON e.employee_id = c.employee_id
+ WHERE EXTRACT(YEAR FROM c.contribution_date) = 2022;
+
+-------------------------------------------------------------------------------
+-- Subqueries (simple and correlated)
+
+-- 1) Display employees who have a salary less than the average salary
+SELECT last_name,
+       first_name,
+       salary
+  FROM EMPLOYEES
+ WHERE salary < (SELECT AVG(salary) FROM EMPLOYEES);
+
+-- 2) Display employees who have not paid any contributions
+SELECT last_name,
+       first_name
+  FROM EMPLOYEES
+ WHERE employee_id NOT IN (SELECT employee_id FROM CONTRIBUTIONS);
+
+-- 3) Display employees' last_name, first_name, and their accountant's last_name 
+--    (correlated subquery)
+SELECT e.last_name,
+       e.first_name,
+       (SELECT a.last_name
+          FROM ACCOUNTANTS a
+         WHERE e.accountant_id = a.accountant_id
+       ) AS accountant_last_name
+  FROM EMPLOYEES e;
+
+-- 4) Display the hierarchical structure of the accountants based on chief_accountant_id
+SELECT LEVEL,
+       last_name,
+       first_name,
+       accountant_id,
+       chief_accountant_id
+  FROM ACCOUNTANTS
+CONNECT BY PRIOR accountant_id = chief_accountant_id
+START WITH accountant_id = 1;
